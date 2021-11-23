@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_threshold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="设置阈值，越小越敏感" />
+
+            <Button
+                android:id="@+id/btn_threshold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设置阈值" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_interval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="设置时间间隔,单位毫秒" />
+
+            <Button
+                android:id="@+id/btn_interval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设置间隔" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <Switch
+                android:id="@+id/sw_gravity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="重力传感器" />
+
+            <TextView
+                android:id="@+id/tv_gravity_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取值范围= \nX轴= \nY轴= \nZ轴=" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <Switch
+                android:id="@+id/sw_accelerometer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="加速度传感器" />
+
+            <TextView
+                android:id="@+id/tv_accelerometer_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取值范围= \nX轴= \nY轴= \nZ轴=" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <Switch
+                android:id="@+id/sw_linear_accelerometer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="线性加速度传感器" />
+
+            <TextView
+                android:id="@+id/tv_linear_accelerometer_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取值范围= \nX轴= \nY轴= \nZ轴=" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <Switch
+                android:id="@+id/sw_gyroscope"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="陀螺仪传感器" />
+
+            <TextView
+                android:id="@+id/tv_gyroscope_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取值范围= \nX轴= \nY轴= \nZ轴=" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <Switch
+                android:id="@+id/sw_rotationVector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="旋转矢量传感器" />
+
+            <TextView
+                android:id="@+id/tv_rotationVector_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取值范围= \nX轴= \nY轴= \nZ轴=" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>
