@@ -49,6 +49,8 @@ public class SensorUtil implements SensorEventListener {
     private int interval = 0;
     //摇晃检测阈值，决定了对摇晃的敏感程度，越小越敏感。
     private double threshold = 0;
+    private double linearAccelerationThreshold = 1;
+    private double gyroscopeThreshold = 0.5;
 
     //重力加速度常量
     public static final float STANDARD_GRAVITY = 9.78F;
@@ -94,10 +96,10 @@ public class SensorUtil implements SensorEventListener {
     public SensorUtil(Context mContext) {
         sensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
         setSenorType(Sensor.TYPE_GRAVITY);
-        setSenorType(Sensor.TYPE_ACCELEROMETER);
+//        setSenorType(Sensor.TYPE_ACCELEROMETER);
         setSenorType(Sensor.TYPE_LINEAR_ACCELERATION);
         setSenorType(Sensor.TYPE_GYROSCOPE);
-        setSenorType(Sensor.TYPE_ROTATION_VECTOR);
+//        setSenorType(Sensor.TYPE_ROTATION_VECTOR);
     }
 
     public interface OnSensorValueListener {
@@ -238,9 +240,9 @@ public class SensorUtil implements SensorEventListener {
             return;
         gravityLastTime = currentUpdateTime;
         // 获得x,y,z坐标
-        gravityValues[0] = event.values[0];
-        gravityValues[1] = event.values[1];
-        gravityValues[2] = event.values[2];
+        float x = gravityValues[0] = event.values[0];
+        float y = gravityValues[1] = event.values[1];
+        float z = gravityValues[2] = event.values[2];
 
         // 获得x,y,z的变化值
         float deltaX = gravityValues[0] - lastGravityValues[0];
@@ -260,14 +262,26 @@ public class SensorUtil implements SensorEventListener {
                 "\nX轴=" + event.values[0] +
                 "\nY轴=" + event.values[1] +
                 "\nZ轴=" + event.values[2];
-        double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
-        if (threshold > 0 && diff > threshold) {
+//        double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+
+        double localG = Math.sqrt(x * x + y * y + z * z);
+
+        double Ya = Math.asin(x/localG)/Math.PI*180;
+        double Yb = Math.asin(y/localG)/Math.PI*180;
+        double Yc = Math.asin(z/localG)/Math.PI*180;
+        double gravityXThreshold = 15,gravityYThreshold = 15,gravityZThreshold =15;
+
+        if(Ya<gravityXThreshold || Yb < gravityYThreshold || Yc <gravityZThreshold ){
+            MyLogUtil.e(TAG, "重力传感器 倾斜超过15度");
+        }
+        if (threshold > 0 && localG > threshold) {
             value += " 超过阈值";
             MyLogUtil.e(TAG, "重力传感器 手机在晃动");
         } else {
             MyLogUtil.e(TAG, "重力传感器 手机没有晃动");
         }
         sensorValueListener.onSenorValue(value, event.sensor.getType());
+
 
         if (gravityValues[0] > STANDARD_GRAVITY) {
             MyLogUtil.e(TAG, "重力传感器 重力指向设备左边");
@@ -295,9 +309,9 @@ public class SensorUtil implements SensorEventListener {
         accelerometerLastTime = currentUpdateTime;
         if (isIncludeGravity) {//包含重力影响
             // 获得x,y,z坐标
-            accelerometerValues[0] = event.values[0];
-            accelerometerValues[1] = event.values[1];
-            accelerometerValues[2] = event.values[2];
+            float x =  accelerometerValues[0] = event.values[0];
+            float y =  accelerometerValues[1] = event.values[1];
+            float z =  accelerometerValues[2] = event.values[2];
 
             // 获得x,y,z的变化值
             float deltaX = accelerometerValues[0] - lastAccelerometerValues[0];
@@ -317,7 +331,8 @@ public class SensorUtil implements SensorEventListener {
                     "\nX轴=" + event.values[0] +
                     "\nY轴=" + event.values[1] +
                     "\nZ轴=" + event.values[2];
-            double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+//            double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+            double diff = Math.sqrt(x * x + y * y + z * z);
             if (threshold > 0 && diff > threshold) {
                 value += " 超过阈值";
                 MyLogUtil.e(TAG, "加速度传感器 手机在晃动");
@@ -376,9 +391,9 @@ public class SensorUtil implements SensorEventListener {
         if (interval > 0 && timeInterval < interval)
             return;
         linearAccelerometerLastTime = currentUpdateTime;
-        linearAccelerationValues[0] = event.values[0];
-        linearAccelerationValues[1] = event.values[1];
-        linearAccelerationValues[2] = event.values[2];
+        float x = linearAccelerationValues[0] = event.values[0];
+        float y = linearAccelerationValues[1] = event.values[1];
+        float z = linearAccelerationValues[2] = event.values[2];
         // 获得x,y,z的变化值
         float deltaX = linearAccelerationValues[0] - lastLinearAccelerationValues[0];
         float deltaY = linearAccelerationValues[1] - lastLinearAccelerationValues[1];
@@ -397,7 +412,11 @@ public class SensorUtil implements SensorEventListener {
                 "\nX轴=" + event.values[0] +
                 "\nY轴=" + event.values[1] +
                 "\nZ轴=" + event.values[2];
-        double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+//        double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+        double diff = Math.sqrt(x * x + y * y + z * z);
+        if(diff>linearAccelerationThreshold){
+            MyLogUtil.e(TAG, "线性加速度传感器 手机在晃动");
+        }
         if (threshold > 0 && diff > threshold) {
             value += " 超过阈值";
             MyLogUtil.e(TAG, "线性加速度传感器 手机在晃动");
@@ -428,9 +447,9 @@ public class SensorUtil implements SensorEventListener {
                     return;
                 gyroscopeLastTime = currentUpdateTime;
                 // 未规格化的旋转向量坐标值，。
-                gyroscopeValues[0] = event.values[0];
-                gyroscopeValues[1] = event.values[1];
-                gyroscopeValues[2] = event.values[2];
+                float x = gyroscopeValues[0] = event.values[0];
+                float y = gyroscopeValues[1] = event.values[1];
+                float z = gyroscopeValues[2] = event.values[2];
 
 
                 // 获得x,y,z的变化值
@@ -451,7 +470,11 @@ public class SensorUtil implements SensorEventListener {
                         "\nX轴=" + event.values[0] +
                         "\nY轴=" + event.values[1] +
                         "\nZ轴=" + event.values[2];
-                double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+//                double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+                double diff = Math.sqrt(x * x + y * y + z * z);
+                if(diff>gyroscopeThreshold){
+                    MyLogUtil.e(TAG, "陀螺仪传感器 手机在晃动");
+                }
                 if (threshold > 0 && diff > threshold) {
                     value += " 超过阈值";
                     MyLogUtil.e(TAG, "陀螺仪传感器 手机在晃动");
@@ -523,9 +546,9 @@ public class SensorUtil implements SensorEventListener {
         if (interval > 0 && timeInterval < interval)
             return;
         rotationVectorLastTime = currentUpdateTime;
-        rotationVectorValues[0] = event.values[0];
-        rotationVectorValues[1] = event.values[1];
-        rotationVectorValues[2] = event.values[2];
+        float x =  rotationVectorValues[0] = event.values[0];
+        float y =  rotationVectorValues[1] = event.values[1];
+        float z =  rotationVectorValues[2] = event.values[2];
 
 
         // 获得x,y,z的变化值
@@ -546,7 +569,8 @@ public class SensorUtil implements SensorEventListener {
                 "\nX轴=" + event.values[0] +
                 "\nY轴=" + event.values[1] +
                 "\nZ轴=" + event.values[2];
-        double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+//        double diff = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) / timeInterval * 10000;
+        double diff = Math.sqrt(x * x + y * y + z * z);
         if (threshold > 0 && diff > threshold) {
             value += " 超过阈值";
             MyLogUtil.e(TAG, "旋转矢量传感器 手机在晃动");
